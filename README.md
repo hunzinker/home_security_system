@@ -26,6 +26,7 @@ a read.
 ## Security System Flow
 
 ## Start Motion
+```
 `security_app` ---> Start ---> `security_api` ---> `start_motion` ---> Notify_`security_app#contacts`
                                                          |
                                                          |
@@ -56,6 +57,8 @@ a read.
                                    |
                                    v
                                  View
-
+```
 ### Stop motion
+```
 `security_app` ---> Stop ---> `security_api` ---> `stop_motion` ---> Notify_`security_app#contacts`
+```
