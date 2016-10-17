@@ -1,0 +1,5 @@
+<% if current_admin %>
+  <li><%= link_to "Webcams", admins_webcams_path %></li>
+  <li><%= link_to current_admin.email, "#" %></li>
+<% end %>
+<li><%= link_to "Log Out", destroy_admin_session_path, method: :delete %></li>

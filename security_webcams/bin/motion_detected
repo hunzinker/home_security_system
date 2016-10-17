@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+#
+# Montion on_motion_detected: notify $MESSAGE via email.
+
+if [ -f ~/.security ]; then
+    . ~/.security
+else
+    echo "Security file not found." >> /home/pi/motion/log/upload_file.log 2>&1
+    exit 1
+fi
+
+cat <<EOF | msmtp -a default -t
+To: ${MESSAGE}
+Subject: Motion Detected on ${CAMERA}
+
+${HOST}/admins/webcams#${CAMERA}
+EOF

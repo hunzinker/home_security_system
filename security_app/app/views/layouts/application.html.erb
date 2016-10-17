@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title><%= content_for?(:title) ? yield(:title) : "Untitled" %></title>
+
+    <%= stylesheet_link_tag    "application" %>
+    <%= csrf_meta_tags %>
+  </head>
+
+  <body>
+    <%= render partial: "shared/top_nav" %>
+    <%= render partial: "shared/alert" %>
+    <div class="row">
+      <div class="small-12 columns">
+        <%= yield %>
+      </div>
+    </div>
+    <%= javascript_include_tag "application" %>
+    <% if admin_signed_in? %>
+      <%= javascript_include_tag "admin.js" %>
+    <% end %>
+  </body>
+</html>

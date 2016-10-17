@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+#
+# Stop motion and notify
+
+if [ -f ~/.security ]; then
+    . ~/.security
+else
+    echo "Security file not found." >> /home/pi/motion/log/upload_file.log 2>&1
+    exit 1
+fi
+
+notify() {
+    echo -e "To: ${MESSAGE}\nSubject: ${CAMERA} System Disarmed" | msmtp -a default -t
+}
+
+PID=
+
+if [ -f /home/pi/motion/motion.pid ]; then
+    PID=$(cat /home/pi/motion/motion.pid)
+fi
+
+if ps -p $PID > /dev/null 2>&1; then
+    kill $PID
+    notify
+fi

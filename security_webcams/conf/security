@@ -1,0 +1,14 @@
+CAMERA=
+
+AWS_KEY=
+AWS_SECRET=
+AWS_BUCKET=
+AWS_FOLDER="${CAMERA}"
+
+HOST=
+API_WEBCAMS=
+API_USER=
+API_PASS=
+
+MESSAGE=$(curl -sS --user "${API_USER}:${API_PASS}" \
+    "${HOST}${API_WEBCAMS}/contacts")

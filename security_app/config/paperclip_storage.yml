@@ -1,0 +1,28 @@
+common_s3_information: &COMMON_S3_INFORMATION
+  :access_key_id:
+  :secret_access_key:
+
+development:
+  :webcams:
+    :storage: s3
+    :s3_permissions: :private
+    :url: ":camera/:image_file_name"
+    :path: ":camera/:image_file_name"
+    :bucket: ""
+    :s3_protocol: "https"
+    s3_credentials:
+      <<: *COMMON_S3_INFORMATION
+
+test:
+
+production:
+  :webcams:
+    :storage: s3
+    :s3_permissions: :private
+    :url: ":camera/:image_file_name"
+    :path: ":camera/:image_file_name"
+    :bucket: ""
+    :s3_protocol: "https"
+    :preserve_files: true
+    s3_credentials:
+      <<: *COMMON_S3_INFORMATION

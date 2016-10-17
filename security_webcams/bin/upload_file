@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+#
+# Transfers file to AWS S3 and POSTs metadata to HOST
+#
+# Author: Ken Seal
+
+log_file=/home/pi/motion/log/upload_file.log
+
+if [ -f ~/.security ]; then
+    . ~/.security
+else
+    echo "Security file not found." >> $log_file 2>&1
+    exit 1
+fi
+
+## File ##
+file="$1"
+file_name=$(basename $file)
+file_size=$(wc -c $file | cut -f 1 -d ' ')
+
+## AWS ##
+key_id=$AWS_KEY
+key_secret=$AWS_SECRET
+bucket=$AWS_BUCKET
+folder=$AWS_FOLDER
+path="$folder/$file_name"
+
+## API ##
+host="$HOST"
+api_webcams="$API_WEBCAMS"
+api_user="$API_USER"
+api_pass="$API_PASS"
+
+date="$(LC_ALL=C date -u +"%a, %d %b %Y %X %z")"
+
+## MD5 ##
+md5="$(openssl md5 -binary < "$file" | base64)"
+
+## Content Type ##
+content_type=$(file --mime-type $file | cut -f 2 -d ' ')
+
+## AWS Signature ##
+sig="$(printf "PUT\n$md5\n$content_type\n$date\n/$bucket/$path" | \
+    openssl sha1 -binary -hmac "$key_secret" | base64)"
+
+## Post to S3 ##
+curl -sS -T $file https://s3.amazonaws.com/$bucket/$path \
+    -H "Date: $date" \
+    -H "Authorization: AWS $key_id:$sig" \
+    -H "Content-Type: $content_type" \
+    -H "Content-MD5: $md5" >> $log_file 2>&1
+
+## Post to host api endpoint ##
+curl -sS --user "$api_user:$api_pass" \
+    -X POST \
+    -H "Content-Type:application/json" \
+    -d "{\"webcam\":{\"camera\":\"$folder\",\"image_file_name\":\"$file_name\",\"image_content_type\":\"$content_type\",\"image_file_size\":\"$file_size\"}}" \
+    "${host}${api_webcams}" >> $log_file 2>&1

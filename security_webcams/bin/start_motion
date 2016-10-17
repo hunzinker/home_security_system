@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+#
+# Start motion and notify
+
+if [ -f ~/.security ]; then
+    . ~/.security
+else
+    echo "Security file not found." >> /home/pi/motion/log/upload_file.log 2>&1
+    exit 1
+fi
+
+notify() {
+    echo -e "To: ${MESSAGE}\nSubject: ${CAMERA} System Armed" | msmtp -a default -t
+}
+
+if [ -f /home/pi/motion/motion.pid ]; then
+    PID=$(cat /home/pi/motion/motion.pid)
+    if ps -p $PID > /dev/null 2>&1; then
+        exit
+    else
+        rm /home/pi/motion/motion.pid
+    fi
+fi
+
+if /home/pi/motion/motion -c /home/pi/motion/motion.conf; then
+    notify
+fi

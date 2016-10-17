@@ -1,0 +1,7 @@
+<% if videos %>
+  <% videos.each do |video| %>
+    <div class="flex-video">
+      <iframe src="<%= video.authenticated_s3_get_url %>" frameborder="0" allowFullScreen></iframe>
+    </div>
+  <% end %>
+<% end %>

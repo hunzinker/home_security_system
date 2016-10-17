@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+#
+# Arm and Disarm security system
+#
+# Author: Ken Seal
+
+HOSTS=(
+    "user@host1" \
+    "user@host2" \
+    "user@host3"
+)
+
+security() {
+    if [ ! -z ${command+c} ]; then
+        for h in ${HOSTS[@]}; do
+            ssh ${h} "/home/pi/bin/${command}_motion" >> \
+                /home/pi/log/security.log 2>&1 &
+        done
+
+        if [ ${command} == "start" ]; then
+            echo "armed" > /home/pi/.security
+        else
+            echo "disarmed" > /home/pi/.security
+        fi
+    fi
+}
+
+system_status() {
+    cat /home/pi/.security
+}
+
+usage() {
+cat <<-USAGE
+    security
+
+    usage: security [OPTIONS]
+
+    Optional arguments:
+
+    -a arm
+
+    -d disarm
+
+    -s status (armed/disarmed)
+
+    (-h)
+
+    Author:
+    Ken Seal
+USAGE
+}
+
+while getopts ':adsh' OPTION; do
+    case $OPTION in
+    a)  command="start"
+        ;;
+    d)  command="stop"
+        ;;
+    s)  system_status
+        ;;
+    h)  usage
+        exit 0
+        ;;
+    \:) printf "Argument missing: %s option\n" $OPTARG
+        usage
+        exit 1
+        ;;
+    \?) printf "Unknown option: %s\n" $OPTARG
+        usage
+        exit 1
+        ;;
+    esac
+done
+shift $(($OPTIND - 1))
+
+security
+
+exit 0

@@ -1,0 +1,17 @@
+<h1>Webcam Image Gallery</h1>
+<%= render partial: "security", locals: { status: @status } %>
+<p><%= link_to "Webcam Video Gallery", video_admins_webcams_path(q: "camera1") %></p>
+<%= render partial: "delete_images_videos" %>
+<dl class="sub-nav cameras">
+  <dt>Camera:</dt>
+  <dd class="camera1 filter">
+    <%= link_to "One", admins_webcams_path(q: "camera1") %>
+  </dd>
+  <dd class="camera2 filter">
+    <%= link_to "Two", admins_webcams_path(q: "camera2") %>
+  </dd>
+  <dd class="camera3 filter">
+    <%= link_to "Three", admins_webcams_path(q: "camera3") %>
+  </dd>
+</dl>
+<%= render partial: "image_gallery", locals: { images: @camera } %>
