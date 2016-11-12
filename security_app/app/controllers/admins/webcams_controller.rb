@@ -8,7 +8,7 @@ class Admins::WebcamsController < ApplicationController
   end
 
   def video
-    webcam = Webcam.where(image_content_type: "application/ogg")
+    webcam = Webcam.where(image_content_type: "video/mp4")
 
     @camera = webcam.where("camera = ?", query)
   end
